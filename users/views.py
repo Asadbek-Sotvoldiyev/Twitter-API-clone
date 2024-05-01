@@ -161,7 +161,7 @@ class MyAllFollowersListApiView(ListAPIView):
     serializer_class = UserSerializer
 
     def get_queryset(self):
-        return self.request.user.followers
+        return self.request.user.followers.prefetch_related()
 
 
 

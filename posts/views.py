@@ -158,4 +158,4 @@ class GetUsersWhoLiked(ListAPIView):
 
     def get_queryset(self):
         post_id = self.kwargs['post_id']
-        return Post.objects.get(id=post_id).liked_users.select_related()
+        return Post.objects.get(id=post_id).liked_users.prefetch_related()
