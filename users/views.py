@@ -2,7 +2,11 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView, get_object_or_404
 from rest_framework import permissions, status
-from .serializers import RegisterSerializer, LoginSerializer, UserSerializer, FollowRequestSerializer
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.views import TokenRefreshView
+
+from .serializers import RegisterSerializer, LoginSerializer, UserSerializer, FollowRequestSerializer, \
+    LoginRefreshSerializer, LogOutSerializer
 from .models import User, FollowRequest
 
 
@@ -30,6 +34,33 @@ class LoginApiView(APIView):
             }
             return Response(data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+# access token expire bolganda refresh token orqali access tokenni yangilash
+class LoginRefreshView(TokenRefreshView):
+    serializer_class = LoginRefreshSerializer
+
+
+# logout and add token to blacklist
+class LogOutView(APIView):
+    serializer_class = LogOutSerializer
+    permission_classes = (permissions.IsAuthenticated, )
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=self.request.data)
+        serializer.is_valid(raise_exception=True)
+        try:
+            refresh_token = self.request.data['refresh']
+            token = RefreshToken(refresh_token)
+            token.blacklist()
+
+            data = {
+                "success": True,
+                "message": "You are logged out"
+            }
+            return Response(data, status=205)
+        except:
+            return Response(status=400)
 
 
 class GetAllUsersListApiView(ListAPIView):

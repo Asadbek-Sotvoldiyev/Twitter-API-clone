@@ -1,7 +1,12 @@
 from django.contrib.auth import authenticate
+from django.contrib.auth.models import update_last_login
 from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
+from rest_framework.generics import get_object_or_404
+from rest_framework_simplejwt.serializers import TokenRefreshSerializer
+from rest_framework_simplejwt.tokens import AccessToken
+
 from .models import User, FollowRequest
 from shared.utility import check_email, check_username
 
@@ -106,3 +111,19 @@ class FollowRequestSerializer(serializers.ModelSerializer):
         model = FollowRequest
         fields = ('id', 'from_user', 'is_accepted')
         depth = 1
+
+
+class LoginRefreshSerializer(TokenRefreshSerializer):
+
+    def validate(self, validated_data):
+        data = super().validate(validated_data)
+        access_token_instance = AccessToken(data['access'])
+        user_id = access_token_instance['user_id']
+        user = get_object_or_404(User, id=user_id)
+        update_last_login(None, user)
+
+        return data
+
+
+class LogOutSerializer(serializers.Serializer):
+    refresh = serializers.CharField()
