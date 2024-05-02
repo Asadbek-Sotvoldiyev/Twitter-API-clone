@@ -6,7 +6,7 @@
 </head>
 <body>
     <h1>Installation</h1>
-    <p>1. git clone</p>
+    <p>1. git clone https://github.com/Asadbek-Sotvoldiyev/Twitter-API-clone</p>
     <p>2. create a virtual environment and activate</p>
     <p>3. pip install -r requirements.txt</p>
     <p>4. python manage.py migrate</p>
