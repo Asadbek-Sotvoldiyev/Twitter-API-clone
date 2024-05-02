@@ -1,7 +1,8 @@
 from django.urls import path
 from .views import (PostCreateApiView, GetAllPostsListApiView, GetUserPostApiView,
                     MyAllPostsApiView, PostUpdateApiView, PostDestroyApiView, AddCommentApiView,
-                    GetAllPostComments, DestroyComment, AllMyCommentsApiView, AddLikeApiView, GetUsersWhoLiked)
+                    GetAllPostComments, DestroyComment, AllMyCommentsApiView, AddLikeApiView,
+                    GetUsersWhoLiked, MyLikedPostsApiView)
 
 urlpatterns = [
     # posts
@@ -20,5 +21,6 @@ urlpatterns = [
 
     # Likes
     path('add-like/', AddLikeApiView.as_view()),
-    path('get-users-who-liked/<int:post_id>/', GetUsersWhoLiked.as_view())
+    path('get-users-who-liked/<int:post_id>/', GetUsersWhoLiked.as_view()),
+    path('my-liked-posts/', MyLikedPostsApiView.as_view()),
 ]

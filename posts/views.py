@@ -1,6 +1,7 @@
 from rest_framework import status
 from rest_framework.exceptions import ValidationError
 from rest_framework.generics import CreateAPIView, ListAPIView, get_object_or_404, UpdateAPIView, DestroyAPIView
+from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from users.models import User
@@ -12,10 +13,17 @@ from users.serializers import UserSerializer
 
 
 # Post yaratish
-class PostCreateApiView(CreateAPIView):
+class PostCreateApiView(APIView):
     permission_classes = (IsAuthenticated, )
-    queryset = Post.objects.all()
-    serializer_class = PostSerializer
+    parser_classes = (MultiPartParser, FormParser)
+
+    def post(self, request, *args, **kwargs):
+        serializer = PostSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(user=request.user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 # Brcha postlarni ko'rish
@@ -91,7 +99,7 @@ class AddCommentApiView(APIView):
     def post(self, request):
         serializer = CommentSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        serializer.save()
+        serializer.save(user=request.user)
 
         return Response(serializer.data)
 
@@ -159,3 +167,12 @@ class GetUsersWhoLiked(ListAPIView):
     def get_queryset(self):
         post_id = self.kwargs['post_id']
         return Post.objects.get(id=post_id).liked_users.prefetch_related()
+
+
+# Men yoqtirgan barcha postlar
+class MyLikedPostsApiView(ListAPIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = PostSerializer
+
+    def get_queryset(self):
+        return Post.objects.filter(liked_users=self.request.user)

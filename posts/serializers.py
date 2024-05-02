@@ -3,15 +3,13 @@ from .models import Post, Comment
 
 
 class PostSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Post
-        fields = ('id', 'user', 'video_or_photo', 'content')
+        fields = ('id', 'video_or_photo', 'content')
 
     def to_representation(self, instance):
         data = {
-            'success': True,
-            'message': "Post created successfully",
+            'status': True,
             'post': {
                 'id': instance.id,
                 'user': instance.user.username,
@@ -23,10 +21,9 @@ class PostSerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Comment
-        fields = ('id', 'user', 'post', 'text')
+        fields = ('id', 'post', 'text')
 
     def to_representation(self, instance):
         data = {

@@ -17,7 +17,6 @@ class RegisterApiView(APIView):
 
 class LoginApiView(APIView):
     serializer_class = LoginSerializer
-    permission_classes = (permissions.IsAuthenticated, )
 
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
@@ -119,7 +118,7 @@ class AcceptFollowRequestApiView(APIView):
 class DeleteFollowRequestApiView(APIView):
     permission_classes = (permissions.IsAuthenticated, )
 
-    def get(self, request, id):
+    def delete(self, request, id):
         user = request.user
         follow_to_delete = get_object_or_404(user.followers, id=id)
 
