@@ -91,7 +91,8 @@ class MyFollowRequestsApiView(APIView):
 class AcceptFollowRequestApiView(APIView):
     permission_classes = (permissions.IsAuthenticated, )
 
-    def get(self, request, id):
+    def post(self, request):
+        id = request.data['follow_request_id']
         try:
             follow_request_user = FollowRequest.objects.get(id=id)
             from_user = follow_request_user.from_user
@@ -143,7 +144,8 @@ class DeleteFollowRequestApiView(APIView):
 class IgnoreFollowRequestApiView(APIView):
     permission_classes = (permissions.IsAuthenticated, )
 
-    def get(self, request, id):
+    def post(self, request):
+        id = request.data['follow_request_id']
         follow_to_ignore = get_object_or_404(FollowRequest, to_user=request.user)
         follow_to_ignore.delete()
 

@@ -9,8 +9,8 @@ urlpatterns = [
     path('get-all-users/', GetAllUsersListApiView.as_view()),
     path('send-follow-request/', SendFollowRequestApiView.as_view()),
     path('my-all-follow-requests/', MyFollowRequestsApiView.as_view()),
-    path('accept-follower/<int:id>/', AcceptFollowRequestApiView.as_view()),
+    path('accept-follower/', AcceptFollowRequestApiView.as_view()),
     path('delete-follower/<int:id>/', DeleteFollowRequestApiView.as_view()),
-    path('ignore-follower/<int:id>/', IgnoreFollowRequestApiView.as_view()),
+    path('ignore-follower/', IgnoreFollowRequestApiView.as_view()),
     path('my-followers/', MyAllFollowersListApiView.as_view()),
 ]
